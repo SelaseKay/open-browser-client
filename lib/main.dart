@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
+import 'env.dart';
 
 void main() {
   runApp(const MyApp());
@@ -51,7 +52,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void connectSocket() {
     try {
-      socket = IO.io('http://192.168.43.229:3000', <String, dynamic>{
+      socket = IO.io('http://$myLocalHostIP:3000', <String, dynamic>{
         "transports": ["websocket"],
         "autoConnect": false,
       });
