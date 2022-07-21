@@ -51,18 +51,25 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void connectSocket() {
     try {
-      socket = IO.io('http://192.168.26.139:5000', <String, dynamic>{
+      socket = IO.io('http://192.168.43.229:3000', <String, dynamic>{
         "transports": ["websocket"],
         "autoConnect": false,
       });
       socket.connect();
 
       socket.onConnect((data) => debugPrint("Socket connected"));
-    } catch (e) {
-      debugPrint("error is ${e.toString()}");
-    }
 
-    debugPrint("${socket.connected}");
+      socket.on("disconnect", (data) {
+        debugPrint('Socket disconnected');
+      });
+    } catch (e) {
+      debugPrint("error occured: ${e.toString()}");
+    }
+  }
+
+  void sendLink() {
+    socket.emit('link', {"link": _controller.text.trim()});
+    _controller.clear();
   }
 
   @override
@@ -91,7 +98,10 @@ class _MyHomePageState extends State<MyHomePage> {
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8.0)),
                   onPressed: () {
-                    debugPrint("${socket.connected}");
+                    if (_controller.text.isEmpty) {
+                      return;
+                    }
+                    sendLink();
                   },
                   child: const Text(
                     "Open Link",
